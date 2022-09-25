@@ -21,8 +21,8 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token, user }) {
             // Check if email is prof or student
             // Check if user already exists
-            const studentRegex = new RegExp('f\d+@hyderabad\.bits-pilani\.ac\.in');
-            const profRegex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@hyderabad\.bits-pilani\.ac\.in");
+            const studentRegex = /f\d+@hyderabad\.bits-pilani\.ac\.in/g
+            const profRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@hyderabad\.bits-pilani\.ac\.in/g
             if (studentRegex.test(session?.user?.email as string)) {
                 const student = await prisma.student.findUnique({ where: { email: session?.user?.email } })
 
