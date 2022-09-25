@@ -1,5 +1,14 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from 'next-auth/providers/google';
+import { NextApiRequest, NextApiResponse } from "next";
+
+import { Session } from "next-auth";
+import { PrismaClient, Student } from "@prisma/client";
+import { unstable_getServerSession } from "next-auth/next"
+
+import { type } from "os";
+const prisma = new PrismaClient({ log: ["query"] });
+
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -9,8 +18,43 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        session({ session, token, user }) {
-            return session // The return type will match the one returned in `useSession()`
+        async session({ session, token, user }) {
+            // Check if email is prof or student
+            // Check if user already exists
+            const studentRegex = new RegExp('f\d+@hyderabad\.bits-pilani\.ac\.in');
+            const profRegex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@hyderabad\.bits-pilani\.ac\.in");
+            if (studentRegex.test(session?.user?.email as string)) {
+                const student = await prisma.student.findUnique({ where: { email: session?.user?.email } })
+
+                if (student === null) {
+                    const student = await prisma.student.create({
+                        data: {
+                            name: session?.user?.name,
+                            email: session?.user?.email
+                        }
+                    })
+                }
+                return session // The return type will match the one returned in `useSession()`
+            }
+            if (profRegex.test(session?.user?.email as string)) {
+                const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email } })
+
+                if (prof === null) {
+                    const prof = await prisma.prof.create({
+                        data: {
+                            name: session?.user?.name,
+                            id: session?.user?.email
+                        }
+                    })
+                }
+                return session // The return type will match the one returned in `useSession()`
+            }
+
+            const fakeSession: Session = {
+                cbt: "",
+                expires: "",
+            }
+            return fakeSession
         },
     },
 

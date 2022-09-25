@@ -13,7 +13,7 @@ export default async function api(req: NextApiRequest, res: NextApiResponse<Perf
     try {
         const session = await unstable_getServerSession(req, res, authOptions)
         const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email } })
-        if (prof === null) { res.json({ message: 'N' }) }
+        if (prof === null) { res.json({ message: 'feggit' }) }
         else {
             const { grade, course, student } = req.body;
             const Performance = await prisma.performance.create({ data: { course: { connect: { code: course } }, student: { connect: { email: student } }, grade: grade } })
