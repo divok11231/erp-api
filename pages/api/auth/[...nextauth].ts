@@ -24,26 +24,26 @@ export const authOptions: NextAuthOptions = {
             const studentRegex = /f\d+@hyderabad\.bits-pilani\.ac\.in/g
             const profRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@hyderabad\.bits-pilani\.ac\.in/g
             if (studentRegex.test(session?.user?.email as string)) {
-                const student = await prisma.student.findUnique({ where: { email: session?.user?.email } })
+                const student = await prisma.student.findUnique({ where: { email: session?.user?.email ? session?.user?.email : "" } })
 
                 if (student === null) {
                     const student = await prisma.student.create({
                         data: {
-                            name: session?.user?.name,
-                            email: session?.user?.email
+                            name: session?.user?.name ? session?.user?.name : "",
+                            email: session?.user?.email ? session?.user?.email : ""
                         }
                     })
                 }
                 return session // The return type will match the one returned in `useSession()`
             }
             if (profRegex.test(session?.user?.email as string)) {
-                const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email } })
+                const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email ? session?.user?.email : "" } })
 
                 if (prof === null) {
                     const prof = await prisma.prof.create({
                         data: {
-                            name: session?.user?.name,
-                            id: session?.user?.email
+                            name: session?.user?.name ? session?.user?.name : "",
+                            id: session?.user?.email ? session?.user?.email : ""
                         }
                     })
                 }
