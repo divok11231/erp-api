@@ -23,6 +23,7 @@ model Course {
   students            Student[]     @relation("courseStudents")
   studentperformances Performance[] @relation("studentcourseperformance")
   profcourse          Prof[]        @relation("ProfCourse")
+  credits             Int
 }
 
 model Prof {

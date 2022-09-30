@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Prof, Performance } from "@prisma/client";
+import { PrismaClient, Prof, Course } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 
@@ -9,15 +9,16 @@ interface Error {
     message: string
 }
 
-export default async function api(req: NextApiRequest, res: NextApiResponse<Performance | Error | null>) {
+export default async function api(req: NextApiRequest, res: NextApiResponse<Error | Course | null>) {
     try {
         const session = await unstable_getServerSession(req, res, authOptions)
         const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email ? session?.user?.email : "" } })
         if (prof === null) { res.json({ message: 'feggit' }) }
         else {
-            const { grade, course, student } = req.body;
-            const Performance = await prisma.performance.create({ data: { course: { connect: { code: course } }, student: { connect: { email: student } }, grade: grade } })
-            res.status(201).json(Performance)
+
+            const { code, name, credits }: Course = req.body;
+            const Course = await prisma.course.create({ data: { code: code, name: name, credits: credits } })
+            res.status(201).json(Course)
         }
     } catch (e) {
         res.status(500)
