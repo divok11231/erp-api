@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, Prof, Course } from "@prisma/client";
+import { PrismaClient, Prof, Course, Performance } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
 

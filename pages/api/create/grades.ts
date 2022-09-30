@@ -16,7 +16,11 @@ export default async function api(req: NextApiRequest, res: NextApiResponse<Perf
         if (prof === null) { res.json({ message: 'feggit' }) }
         else {
             const { grade, course, student } = req.body;
-            const Performance = await prisma.performance.create({ data: { course: { connect: { code: course } }, student: { connect: { email: student } }, grade: grade } })
+            const courseFetched = await prisma.course.findUnique({ where: { code: course } })
+            if (courseFetched === null) { res.json({ message: 'feggit' }) }
+
+
+            const Performance = await prisma.performance.create({ data: { course: { connect: { code: course } }, student: { connect: { email: student } }, grade: grade, credits: courseFetched?.credits as number } })
             res.status(201).json(Performance)
         }
     } catch (e) {

@@ -39,4 +39,5 @@ model Performance {
   studentid     String
   student       Student @relation("StudentGrade", fields: [studentid], references: [email])
   grade         String
+  credits       Int
 }
