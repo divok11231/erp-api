@@ -14,7 +14,7 @@ export default async function api(req: NextApiRequest, res: NextApiResponse<Stud
     try {
         const session = await unstable_getServerSession(req, res, authOptions)
         const Student = await prisma.student.findUnique({ where: { email: session?.user?.email ? session?.user?.email : "" } })
-        if (Student === null) { res.json({ message: 'feggit' }) }
+        if (Student === null) { res.json({ message: 'auuuuugh' }) }
         else {
             const { Course } = req.body;
             const updateUser = await prisma.student.update({

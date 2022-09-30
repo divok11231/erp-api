@@ -13,11 +13,11 @@ export default async function api(req: NextApiRequest, res: NextApiResponse<Perf
     try {
         const session = await unstable_getServerSession(req, res, authOptions)
         const prof = await prisma.prof.findUnique({ where: { id: session?.user?.email ? session?.user?.email : "" } })
-        if (prof === null) { res.json({ message: 'feggit' }) }
+        if (prof === null) { res.json({ message: 'auuuuugh' }) }
         else {
             const { grade, course, student } = req.body;
             const courseFetched = await prisma.course.findUnique({ where: { code: course } })
-            if (courseFetched === null) { res.json({ message: 'feggit' }) }
+            if (courseFetched === null) { res.json({ message: 'auuuuugh' }) }
 
 
             const Performance = await prisma.performance.create({ data: { course: { connect: { code: course } }, student: { connect: { email: student } }, grade: grade, credits: courseFetched?.credits as number } })
